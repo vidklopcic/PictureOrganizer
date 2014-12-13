@@ -1,7 +1,7 @@
 PictureOrganizer
 ================
 PictureOrganizer is script for advanced sorting of photos. You have full control of naming, and folder structure.
-<br>
+<br><br>
 You can download program with gui included from SourceForge - http://sourceforge.net/projects/picturemessorganizer/
 
 Features
