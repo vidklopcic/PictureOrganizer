@@ -14,7 +14,7 @@ Features
 Usage
 ----------------
 ###GUI
-Run ```python PictureOrganizer.py``` or ```python PictureOrganizer.py profile.po``` to start copying from saved profile.
+Run ```python PictureOrganizer.py``` to open GUI or ```python PictureOrganizer.py profile.po``` to start copying from saved profile.
 
 ###Command line
 Import Core.py and create instance with following parameters
