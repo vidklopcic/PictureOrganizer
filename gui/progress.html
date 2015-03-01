@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<style>
+    html {
+        background-color: #212121;
+        overflow: hidden;
+        height: 98%;
+        width: 98%;
+    }
+    body {
+        display: table;
+        height: 100%;
+        width: 100%;
+    }
+    #main_cont {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+    }
+    #work {
+        color: #d6d6d6;
+        font-family: 'Lato', sans-serif;
+        font-size: 30pt;
+    }
+    #progressbar {
+      margin: 0 auto 0 auto;
+      width: 60%;
+      background-color: rgba(0, 0, 0, 0);
+      border-radius: 30px; /* (height of inner div) / 2 + padding */
+      border: 2px solid #0f0f0f;
+      padding: 3px;
+    }
+
+    #progressbar > div {
+       background-color: #5fb741;
+       width: 0%; /* Adjust with JavaScript */
+       height: 23px;
+       border-radius: 30px;
+    }
+</style>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=9">
+    <link href='fonts/font_lato.css' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="jquery.js"></script>
+</head>
+<body>
+    <div id="main_cont">
+        <p id="work">Working...</p><br>
+        <div id="progressbar">
+          <div></div>
+        </div>
+    </div>
+</body>
+</html>

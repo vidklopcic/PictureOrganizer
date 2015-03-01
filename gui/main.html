@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<style>
+    html {
+        background-color: #212121;
+    }
+    .divs {
+        margin-left: 20px;
+        margin-right: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .labels {
+        color: #bababa;
+        font-family: 'Lato', sans-serif;
+        font-size: 12pt;
+        font-weight: lighter;
+    }
+    #radio_explanation, #filter_explanation {
+        color: #d6d6d6;
+        font-family: 'Lato', sans-serif;
+        font-size: 12pt;
+        font-weight: bold;
+    }
+    .textboxes, .source_dir {
+        background-color: #3c3f41;
+        border-radius: 5px;
+        border: 0;
+        width: 70%;
+        color: #d6d6d6;
+        font-family: 'Lato', sans-serif;
+        font-size: 10pt;
+        font-weight: lighter;
+        text-align: center;
+        padding-top: 7px;
+        padding-bottom: 7px;
+        margin-bottom: 5px;
+    }
+    button {
+        background-color: #30435c;
+        color: #bababa;
+        font-family: 'Lato', sans-serif;
+        font-size: 12pt;
+        font-weight: lighter;
+    }
+
+    button:hover {
+        background-color: #345879;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    #select_output_dir, .select_source_dir {
+        width: 50px;
+        font-size: 10pt;
+        border-radius: 0 5px 5px 0;
+        border: 0;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    #add_button {
+        width: 50px;
+        font-size: 12pt;
+        border-radius: 5px;
+        border: 0;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    .source_dir, #output_dir, #img_name, #dir_name {
+        border-radius: 5px;
+        padding-right: 50px;
+        margin-right: -50px;
+        padding-left: 50px;
+        box-sizing: border-box;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .textboxes:focus, .source_dir:focus {
+        outline: none;
+        background-color: #45484a;
+    }
+    #deselect_all {
+        border-radius: 0 5px 5px 0;
+        border: 0;
+        width: 150px;
+        margin-left: 1px;
+    }
+    #select_all {
+        border-radius: 5px 0 0 5px;
+        border: 0;
+        width: 150px;
+        margin-right: 1px;
+    }
+    #table {
+        margin: 0 auto 0 auto;
+    }
+    #filter_extensions {
+        margin-bottom: 10px;
+    }
+    .checkboxes {
+        color: #30435c;
+    }
+    #save {
+        border-radius: 5px;
+        border: 0;
+        background-color: #93332c;
+        width: 200px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    #turn_off_filter {
+        border-radius: 5px;
+        border: 0;
+        background-color: #93332c;
+        margin-bottom: 5px;
+    }
+    #turn_on_filter {
+        border-radius: 5px;
+        border: 0;
+        background-color: #429042;
+        margin-bottom: 5px;
+    }
+    #start {
+        border-radius: 5px;
+        border: 0;
+        background-color: #429042;
+        width: 200px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    #finish {
+        margin-top: 20px;
+        width: 100%;
+        text-align: center;
+    }
+    .naming_help {
+        font-size: 10pt;
+        width: 50px;
+        border-radius: 0 5px 5px 0;
+        border: 0;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    #filter_formats_div {
+        border: 1px solid;
+        border-color: #4e4e4e;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+</style>
+<html>
+<head lang="en">
+    <link href='fonts/font_lato.css' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=9">
+    <title></title>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script>
+        var src_counter = 1;
+        function select_all_extensions() {
+            $('.extensions').prop('checked', true);
+        }
+        function deselect_all_extensions() {
+            $('.extensions').prop('checked', false);
+        }
+        function hide_filter() {
+            $('#filter_hide_section').hide();
+            $('#turn_on_filter').show();
+        }
+        function show_filter() {
+            $('#filter_hide_section').show();
+            $('#turn_on_filter').hide();
+            $('#turn_off_filter').show();
+        }
+        function get_values() {
+            var result = [];
+            var extensions = ['jpg','png','tif','avi','mov','wmv','mts','mp4'];
+            var temp = [];
+            for(var i = 0; i < src_counter; i++) {
+                var src = $('#source_dir'+i).val();
+                if(src != '') {
+                    temp.push(src);
+                }
+            }
+            result.push(temp)
+            result.push($('#output_dir').val());
+            temp = [];
+            if($('#filter_hide_section:hidden').val() == undefined) {
+                for (var i = 0; i < 8; i++) {
+                    if ($('#' + extensions[i] + ':checked').val() == 'on') {
+                        temp.push(extensions[i]);
+                    }
+                }
+                temp = temp.concat($('#filter_extensions').val().split(','));
+            }
+            result.push(temp);
+            if($('#mode_copy:checked').val() == 'copy') {
+                result.push('copy');
+            } else {
+                result.push('move');
+            }
+            if($('#remove_duplicates:checked').val() == 'on'){
+                result.push('true');
+            } else {
+                result.push('false');
+            }
+            result.push($('#img_name').val());
+            result.push($('#dir_name').val());
+            if($('#remove_duplicates:checked').val() == 'on') {
+                result.push('true');
+            } else {
+                result.push('false');
+            }
+            return(JSON.stringify(result));
+        }
+        function start() {
+            window.location='event:start_setting|'+get_values();
+        }
+        function save() {
+            window.location='event:save_setting|'+get_values();
+        }
+        function add_source_input() {
+            $('#source_section').append('<input type="text" class="source_dir" id="source_dir' + src_counter + '"><button class="select_source_dir" onclick="window.location=\'event:source_dir_selector|'+src_counter+'\';">...</button><br>');
+            src_counter ++;
+        }
+        $( document ).ready(function() {
+            window.location='event:load_config';
+        });
+    </script>
+</head>
+<body>
+    <div id="params">
+        <div class="divs" id="source_dir_div">
+            <section id="source_section">
+                <label for="source_dir0" class="labels">source directories</label><br><input type="text" class="source_dir" id="source_dir0"><button class="select_source_dir" onclick="window.location='event:source_dir_selector|0';">...</button><br>
+            </section>
+            <button id="add_button" onclick="add_source_input();">+</button>
+        </div>
+        <div class="divs" id="output_dir_div">
+            <label for="output_dir" class="labels">output directory</label><br><input type="text" class="textboxes" id="output_dir"><button id="select_output_dir" onclick="window.location='event:output_dir_selector';">...</button>
+        </div>
+        <div class="divs" id="img_name_div">
+            <label for="img_name" class="labels">image name</label><br><input type="text" class="textboxes" id="img_name" value="%H;%M ({old})"><button class="naming_help" onclick="window.location='event:naming_help';">?</button>
+        </div>
+        <div class="divs" id="dir_name_div">
+            <label for="dir_name" class="labels">folder name</label><br><input type="text" class="textboxes" id="dir_name" value="%Y_%m_%d"><button class="naming_help" onclick="window.location='event:naming_help';">?</button>
+        </div>
+        <div class="divs" id="remove_duplicates_div">
+            <input class="checkboxes" type="checkbox" id="remove_duplicates" checked="true"><label for="remove_duplicates" class="labels">remove duplicates</label>
+        </div>
+        <div class="divs" id="remove_date_div">
+            <input class="checkboxes" type="checkbox" id="remove_date" style='checked: false;'><label for="remove_date" class="labels">remove date from folder name</label>
+        </div>
+        <div class="divs" id="mode_div">
+            <label id="radio_explanation">Move or copy images?</label><br>
+            <input type="radio" id="mode_copy" name="mode" value="copy"><label for="mode_copy" class="labels">copy</label><br>
+            <input type="radio" id="mode_move" name="mode" value="move" checked="true"><label for="mode_move" class="labels">move</label>
+        </div>
+        <div class="divs" id="filter_formats_div">
+            <label for="filter_extensions" id="filter_explanation">Process only files with following extensions:</label><br>
+            <section id="filter_hide_section">
+                <table id="table" style="width: 300px;">
+                    <tr>
+                        <td><input class="extensions" type="checkbox" id="jpg" checked="true"><label for="jpg" class="labels">jpg</label></td>
+                        <td><input class="extensions" type="checkbox" id="png" checked="true"><label for="png" class="labels">png</label></td>
+                        <td><input class="extensions" type="checkbox" id="tif" checked="true"><label for="tif" class="labels">tif</label></td>
+                        <td><input class="extensions" type="checkbox" id="avi" checked="true"><label for="avi" class="labels">avi</label></td>
+                    </tr>
+                    <tr>
+                        <td><input class="extensions" type="checkbox" id="mov" checked="true"><label for="mov" class="labels">mov</label></td>
+                        <td><input class="extensions" type="checkbox" id="wmv" checked="true"><label for="wmv" class="labels">wmv</label></td>
+                        <td><input class="extensions" type="checkbox" id="mts" checked="true"><label for="mts" class="labels">mts</label></td>
+                        <td><input class="extensions" type="checkbox" id="mp4" checked="true"><label for="mp4" class="labels">mp4</label></td>
+                    </tr>
+                </table><br>
+                <button id="select_all" onclick="select_all_extensions();">Select all</button><button id="deselect_all" onclick="deselect_all_extensions();">Deselect all</button>
+                <br><br><label for="filter_extensions" class="labels">other extensions (separated by comma)</label><br>
+                <input class="textboxes" id="filter_extensions" type="text"><br>
+                <button id="turn_off_filter" onclick="hide_filter();">turn-off filter</button>
+            </section>
+            <button hidden="true" id="turn_on_filter" onclick="show_filter();">turn-on filter</button>
+        </div>
+        <div id="finish">
+            <button id="save" onclick="save();">SAVE</button>
+            <button id="start" onclick="start();">START</button>
+        </div>
+    </div>
+</body>
+</html>
