@@ -18,9 +18,15 @@ Run ```python PictureOrganizer.py``` or ```python PictureOrganizer.py profile.po
 
 ###Command line
 Import Core.py and create instance with following parameters
-```
+* source_dirs ... list[string]
+* output_dir ... string
+* formats_filter ... list[string]
+* mode ... string ('move' or 'copy')
+* remove_duplicates ... boolean
+* img_name ... string (replaced are args from datetime object ex. %m %s plus {old} for original filename)
+* folder_name ... string (same as above)
+* remove_date_from_old_dir_name ... boolean (following regex is performed on dir names: ^[0-9-_.\s]+')
 
-```
 #####Example
 ``` python
 import Core as PictureOrganizer
