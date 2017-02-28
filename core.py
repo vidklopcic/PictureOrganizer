@@ -81,10 +81,10 @@ class Core(object):
 
                 # copy / move, mkdirs
                 dest_path = os.path.join(destination, new_dir_name)
-                try:
-                    os.makedirs(dest_path)
-                except Exception, e:
-                    if 'File exists' not in str(e):
+                if not os.path.isdir(dest_path):
+                    try:
+                        os.makedirs(dest_path)
+                    except Exception, e:
                         print e
                 for i in self.duplicate_names:
                     try:
@@ -112,14 +112,16 @@ class Core(object):
         if self.use_date_from_name:
             try:
                 file_name = os.path.basename(path)[:self.date_from_name_len]
-                print file_name
-                date_taken = datetime.datetime.fromtimestamp(time.mktime(
-                    time.strptime(file_name, self.date_from_name)
-                ))
-                return date_taken
             except:
-                print 'cannot use', self.date_from_name
-                pass
+                file_name = ''
+            for i in range(self.date_from_name_len, len(file_name)):
+                try:
+                    date_taken = datetime.datetime.fromtimestamp(time.mktime(
+                        time.strptime(file_name[i-self.date_from_name_len:i], self.date_from_name)
+                    ))
+                    return date_taken
+                except:
+                    print 'cannot retreive date from', file_name
         with open(path, 'rb') as f:
             try:
                 date_taken = datetime.datetime.fromtimestamp(time.mktime(

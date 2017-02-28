@@ -71,13 +71,17 @@ class PicturesOrganizer():
                 self.change_source_dir(prev_params[0][0], '0')
                 for i in range(len(prev_params[0]) - 1):
                     self.dialog.browser.RunScript('''
-                    $('#source_section').append('<input type="text" class="source_dir" id="source_dir' + src_counter + '"><button class="select_source_dir" onclick="window.location=\'event:source_dir_selector|'+src_counter+\';">...</button><br>');
-                    src_counter ++;
+                        $('#source_section').append('<input type="text" class="source_dir" id="source_dir' + src_counter + '"><button class="select_source_dir" onclick="window.location=\'event:source_dir_selector|'+src_counter+\';">...</button><br>');
+                        src_counter ++;
                     ''')
                     self.change_source_dir(prev_params[i], str(i))
                 print prev_params
                 self.change_output_dir(prev_params[1])
                 self.change_date_from_name(prev_params[8], prev_params[9])
+                if prev_params[3] == 'copy':
+                    self.dialog.browser.RunScript('''
+                        $('#mode_copy').click();
+                    ''')
         except Exception, e:
             print e
 
