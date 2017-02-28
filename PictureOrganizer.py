@@ -2,12 +2,9 @@ import codecs
 import pickle
 import threading
 import urllib2
-import easygui
 import sys
 import time
 import requests
-
-
 import os
 import wx
 import wx.html2
@@ -18,6 +15,7 @@ codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else No
 
 try:
     import uniconsole
+
     config_path = os.getenv('appdata')
     script_path = sys.argv[0]
 except:
@@ -25,6 +23,7 @@ except:
     script_path = os.path.realpath(__file__)
     config_path = os.path.dirname(script_path)
 print script_path
+
 
 class PicturesOrganizer():
     def __init__(self):
@@ -38,7 +37,6 @@ class PicturesOrganizer():
         }
         threading.Thread(target=self.add_to_run_counter).start()
         self.gui_thread()
-
 
     def add_to_run_counter(self):
         try:
@@ -89,14 +87,16 @@ class PicturesOrganizer():
             event.Veto()
 
     def source_dir_selector(self, nr):
-        dir = easygui.diropenbox()
-        self.change_source_dir(dir, nr)
-
+        dialog = wx.DirDialog(None, "Choose the source directory", style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
+        if dialog.ShowModal() == wx.ID_OK:
+            self.change_source_dir(dialog.GetPath(), nr)
+        dialog.Destroy()
 
     def output_dir_selector(self):
-        dir = easygui.diropenbox()
-        print dir
-        self.change_output_dir(dir)
+        dialog = wx.DirDialog(None, "Choose the output directory", style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
+        if dialog.ShowModal() == wx.ID_OK:
+            self.change_output_dir(dialog.GetPath())
+        dialog.Destroy()
 
     def change_source_dir(self, path, nr):
         if not path:
@@ -118,8 +118,10 @@ class PicturesOrganizer():
         self.helper.SetSize((500, 500))
         self.helper.browser.LoadURL(
             'file:///' + os.path.join(os.path.dirname(script_path), 'gui', 'helper.html').replace('\\', '/'))
-        try: self.helper.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
-        except: self.helper.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
+        try:
+            self.helper.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
+        except:
+            self.helper.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
 
     def helper_navigating(self, event):
         if not 'helper.html' in event.GetURL():
@@ -158,8 +160,10 @@ class MainWindow(wx.Frame):
         self.browser = wx.html2.WebView.New(self)
         sizer.Add(self.browser, 1, wx.EXPAND, 10)
         self.SetSizer(sizer)
-        try: self.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, pic_org.html_catch, self.browser)
-        except: self.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, pic_org.html_catch, self.browser)
+        try:
+            self.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, pic_org.html_catch, self.browser)
+        except:
+            self.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, pic_org.html_catch, self.browser)
 
 
 class HelperWindow(wx.Frame):

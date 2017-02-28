@@ -47,6 +47,7 @@ Dependencies
 ----------------
 * Exifread - https://pypi.python.org/pypi/ExifRead
 * wxPython >= 2.9 - http://wiki.wxpython.org/CheckInstall
+	* Mac - <code>brew install wxpython</code>
 
 ##### IMPORTANT for Windows: if gui isn't displayed correctly install ie10_reg.reg to enable ie10 emulation 
 
