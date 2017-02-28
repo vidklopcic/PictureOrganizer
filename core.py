@@ -7,18 +7,23 @@ import datetime
 import exifread
 import sys
 
+from wx import CallAfter
+
 __author__ = 'vid'
 
 
 class Core(object):
     def __init__(self, source_dirs=None, output_dir=None, formats_filter=None, mode='move', remove_duplicates=True,
-                 img_name='{old}', folder_name='{old}', remove_date_from_old_dir_name=False, reference=None,
+                 img_name='{old}', folder_name='{old}', remove_date_from_old_dir_name=False, use_date_from_name=False, date_from_name='', reference=None,
                  go_back=False):
+        self.date_from_name = date_from_name
+        self.use_date_from_name = use_date_from_name
+        self.date_from_name_len = len(time.strftime(self.date_from_name))
         self.go_back = go_back
         self.reference = reference
         self.duplicate_names = [''] + [' (' + str(i) + ')' for i in range(1000)]
         self.mode = mode
-        self.filter = formats_filter
+        self.filter = [i for i in formats_filter if len(i) > 0]
         self.recursive = True  # TODO
         self.remove_duplicate_images = remove_duplicates
 
@@ -96,14 +101,25 @@ class Core(object):
         print not_coppied, 'images not copied'
         self.percentage = '100'
         if self.reference:
-            wx.CallAfter(self.update_gui)
+            CallAfter(self.update_gui)
             time.sleep(.2)
         if self.go_back and self.reference:
-            wx.CallAfter(lambda: self.update_gui(back=True))
+            CallAfter(lambda: self.update_gui(back=True))
         elif self.reference:
             self.reference.dialog.Close()
 
     def get_date_created(self, path):
+        if self.use_date_from_name:
+            try:
+                file_name = os.path.basename(path)[:self.date_from_name_len]
+                print file_name
+                date_taken = datetime.datetime.fromtimestamp(time.mktime(
+                    time.strptime(file_name, self.date_from_name)
+                ))
+                return date_taken
+            except:
+                print 'cannot use', self.date_from_name
+                pass
         with open(path, 'rb') as f:
             try:
                 date_taken = datetime.datetime.fromtimestamp(time.mktime(
@@ -121,11 +137,12 @@ class Core(object):
                 for filename in filenames:
                     counter += 1
                     path = os.path.join(root, filename)
-                    if len(filename.split('.')) > 1:
-                        result[filename + str(os.path.getsize(path))] = [root, filename,
-                                                                         filename.split('.')[-1].lower()]
-                    else:
-                        result[filename + str(os.path.getsize(path))] = [root, filename, '']
+                    if os.path.isfile(path):
+                        if len(filename.split('.')) > 1:
+                            result[filename + str(os.path.getsize(path))] = [root, filename,
+                                                                             filename.split('.')[-1].lower()]
+                        else:
+                            result[filename + str(os.path.getsize(path))] = [root, filename, '']
         print 'removed ' + str(counter - len(result)) + ' duplicates'
         if self.filter:
             result = [result[i] for i in result if result[i][2] in self.filter]

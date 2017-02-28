@@ -26,13 +26,17 @@ print script_path
 
 
 class PicturesOrganizer():
+    date_from_name = False
+
     def __init__(self):
         self.html_events = {
             'source_dir_selector': self.source_dir_selector,
             'output_dir_selector': self.output_dir_selector,
             'naming_help': self.open_naming_help,
+            'all_codes': self.open_all_codes_help,
             'save_setting': self.save_profile,
             'start_setting': self.start_copying_with_parameters,
+            'toggle_date_from_name': self.toggle_date_from_name,
             'load_config': self.load_config  # loads directories from previous usage if there save file
         }
         threading.Thread(target=self.add_to_run_counter).start()
@@ -73,6 +77,7 @@ class PicturesOrganizer():
                     self.change_source_dir(prev_params[i], str(i))
                 print prev_params
                 self.change_output_dir(prev_params[1])
+                self.change_date_from_name(prev_params[8], prev_params[9])
         except Exception, e:
             print e
 
@@ -123,10 +128,36 @@ class PicturesOrganizer():
         except:
             self.helper.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
 
+    def open_all_codes_help(self):
+        self.helper = HelperWindow(None, -1)
+        self.helper.Show()
+        self.helper.SetSize((500, 500))
+        self.helper.browser.LoadURL(
+            'file:///' + os.path.join(os.path.dirname(script_path), 'gui', 'all_codes.html').replace('\\', '/'))
+        try:
+            self.helper.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
+        except:
+            self.helper.Bind(wx.html2.EVT_WEB_VIEW_NAVIGATING, self.helper_navigating, self.helper.browser)
+
     def helper_navigating(self, event):
         if not 'helper.html' in event.GetURL():
             monitor_size = wx.Display(0).GetGeometry().GetSize()
             self.helper.SetSize((monitor_size[0] / 2, monitor_size[1] / 1.2))
+
+    def toggle_date_from_name(self):
+        if self.date_from_name:
+            self.dialog.browser.RunScript('''
+                $('#date_from_name').addClass('date_from_name_disabled');
+                $('#date_from_name').prop('disabled', true);
+                $('#date_from_name_help').css('visibility', 'hidden');
+                                ''')
+        else:
+            self.dialog.browser.RunScript('''
+                $('#date_from_name').removeClass('date_from_name_disabled');
+                $('#date_from_name').prop('disabled', false);
+                $('#date_from_name_help').css('visibility', 'visible');
+                                            ''')
+        self.date_from_name = not self.date_from_name
 
     def start_copying_with_parameters(self, params, goback=True):
         self.dialog.browser.LoadURL(
@@ -147,11 +178,22 @@ class PicturesOrganizer():
     def save_profile(self, params):
         with open(os.path.join(config_path, 'config'), 'w') as f:
             pickle.dump(json.loads(params), f)
-        dialog = wx.FileDialog(None, "Save profile as", os.path.expanduser("~/Desktop"), "", "*.po", wx.SAVE|wx.OVERWRITE_PROMPT)
+        dialog = wx.FileDialog(None, "Save profile as", os.path.expanduser("~/Desktop"), "", "*.po",
+                               wx.SAVE | wx.OVERWRITE_PROMPT)
         if dialog.ShowModal() == wx.ID_OK:
             with open(dialog.GetPath(), 'w') as f:
                 pickle.dump(params, f)
         dialog.Destroy()
+
+    def change_date_from_name(self, use, param):
+        if use == 'true':
+            self.toggle_date_from_name()
+            self.dialog.browser.RunScript('''
+                            $('#enable_date_from_name').prop('checked', true);
+                                                        ''')
+        self.dialog.browser.RunScript('''
+                        $('#date_from_name').val('%s');
+                                                    ''' % param)
 
 
 class MainWindow(wx.Frame):

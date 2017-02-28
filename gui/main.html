@@ -15,6 +15,7 @@
         font-size: 12pt;
         font-weight: lighter;
     }
+
     #radio_explanation, #filter_explanation {
         color: #d6d6d6;
         font-family: 'Lato', sans-serif;
@@ -22,9 +23,9 @@
         font-weight: bold;
     }
     .textboxes, .source_dir {
+        border: solid transparent 1px;
         background-color: #3c3f41;
-        border-radius: 5px;
-        border: 0;
+        border-radius: 10px;
         width: 70%;
         color: #d6d6d6;
         font-family: 'Lato', sans-serif;
@@ -35,7 +36,9 @@
         padding-bottom: 7px;
         margin-bottom: 5px;
     }
+
     button {
+        border: solid #30435c 1px!important;
         background-color: #30435c;
         color: #bababa;
         font-family: 'Lato', sans-serif;
@@ -59,6 +62,7 @@
         padding-top: 7px;
         padding-bottom: 7px;
     }
+
     #add_button {
         width: 50px;
         font-size: 12pt;
@@ -67,7 +71,18 @@
         padding-top: 7px;
         padding-bottom: 7px;
     }
-    .source_dir, #output_dir, #img_name, #dir_name {
+
+    #date_from_name {
+        padding-left: 50px;
+    }
+
+    .date_from_name_disabled {
+        background-color: transparent;
+        border: solid #3c3f41 1px!important;
+        padding: 1px;
+    }
+
+    .source_dir, #output_dir, #img_name, #dir_name, #date_from_name{
         border-radius: 5px;
         padding-right: 50px;
         margin-right: -50px;
@@ -80,6 +95,7 @@
     .textboxes:focus, .source_dir:focus {
         outline: none;
         background-color: #45484a;
+        border: solid #345879 1px;
     }
     #deselect_all {
         border-radius: 0 5px 5px 0;
@@ -208,11 +224,19 @@
             }
             result.push($('#img_name').val());
             result.push($('#dir_name').val());
-            if($('#remove_duplicates:checked').val() == 'on') {
+            if($('#remove_date:checked').val() == 'on') {
                 result.push('true');
             } else {
                 result.push('false');
             }
+
+            if($('#enable_date_from_name:checked').val() == 'on') {
+                result.push('true');
+            } else {
+                result.push('false');
+            }
+            result.push($('#date_from_name').val());
+
             return(JSON.stringify(result));
         }
         function start() {
@@ -240,6 +264,9 @@
         </div>
         <div class="divs" id="output_dir_div">
             <label for="output_dir" class="labels">output directory</label><br><input type="text" class="textboxes" id="output_dir"><button id="select_output_dir" onclick="window.location='event:output_dir_selector';">...</button>
+        </div>
+        <div class="divs" id="date_from_name_div">
+            <input type="checkbox" id="enable_date_from_name" onchange="window.location='event:toggle_date_from_name';"><label for="date_from_name" class="labels">get date from name</label><br><input type="text" class="textboxes date_from_name_disabled" disabled id="date_from_name" value=""><button class="naming_help" id="date_from_name_help" style="visibility: hidden" onclick="window.location='event:all_codes';">?</button>
         </div>
         <div class="divs" id="img_name_div">
             <label for="img_name" class="labels">image name</label><br><input type="text" class="textboxes" id="img_name" value="%H;%M ({old})"><button class="naming_help" onclick="window.location='event:naming_help';">?</button>
