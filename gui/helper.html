@@ -21,7 +21,7 @@
 <body>
     <div id="main_div">
         <p>
-            {old} - old filename<br>
+            {old} - old filename/dirname<br>
             <br>
             %Y - year<br>
             %m - month<br>
@@ -32,8 +32,8 @@
             %S - second<br>
             <br>
             example:<br>
-            img name: %H;%M ({old}) - 21;09 (IMG_3521).jpg<br>
-            dir name: %Y_%m_%d - 2013_12_31<br>
+            img name: %H;%M ({old}) - 21;09 ([original_name]).jpg<br>
+            dir name: %Y_%m_%d (from-{old}) - 2013_12_31 (from-[original_dir])<br>
             <br>
             <a href="all_codes.html">ALL SYMBOLS</a>
         </p>
