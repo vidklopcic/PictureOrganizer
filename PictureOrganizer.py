@@ -147,10 +147,11 @@ class PicturesOrganizer():
     def save_profile(self, params):
         with open(os.path.join(config_path, 'config'), 'w') as f:
             pickle.dump(json.loads(params), f)
-        save_file = easygui.filesavebox(default='organize_profile', filetypes=['*.po']) + '.po'
-        with open(save_file, 'w') as f:
-            pickle.dump(params, f)
-        print params
+        dialog = wx.FileDialog(None, "Save profile as", os.path.expanduser("~/Desktop"), "", "*.po", wx.SAVE|wx.OVERWRITE_PROMPT)
+        if dialog.ShowModal() == wx.ID_OK:
+            with open(dialog.GetPath(), 'w') as f:
+                pickle.dump(params, f)
+        dialog.Destroy()
 
 
 class MainWindow(wx.Frame):
