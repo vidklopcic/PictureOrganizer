@@ -19,7 +19,12 @@ try:
     script_path = sys.argv[0]
 except:
     print 'op sys is linux'
-    script_path = os.path.realpath(__file__)
+    if getattr(sys, 'frozen', False):
+        # we are running in a bundle
+        script_path = sys.executable
+    else:
+        # we are running in a normal Python environment
+        script_path = os.path.realpath(__file__)
     config_path = os.path.dirname(script_path)
 print script_path
 
