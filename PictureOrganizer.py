@@ -4,7 +4,6 @@ import threading
 import urllib2
 import sys
 import time
-import requests
 import os
 import wx
 import wx.html2
@@ -39,14 +38,7 @@ class PicturesOrganizer():
             'toggle_date_from_name': self.toggle_date_from_name,
             'load_config': self.load_config  # loads directories from previous usage if there save file
         }
-        threading.Thread(target=self.add_to_run_counter).start()
         self.gui_thread()
-
-    def add_to_run_counter(self):
-        try:
-            requests.request('GET', 'http://bit.ly/po_stats')
-        except:
-            pass
 
     def gui_thread(self):
         app = wx.App()
