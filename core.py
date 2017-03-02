@@ -109,11 +109,14 @@ class Core(object):
             self.reference.dialog.Close()
 
     def get_date_created(self, path):
+        print path
         if self.use_date_from_name:
+            print 'ok'
             try:
-                file_name = os.path.basename(path)[:self.date_from_name_len]
+                file_name = os.path.basename(path)
             except:
                 file_name = ''
+            print file_name
             for i in range(self.date_from_name_len, len(file_name)):
                 try:
                     date_taken = datetime.datetime.fromtimestamp(time.mktime(
@@ -121,7 +124,8 @@ class Core(object):
                     ))
                     return date_taken
                 except:
-                    print 'cannot retreive date from', file_name
+                    pass
+            print 'cannot retreive date from', file_name
         with open(path, 'rb') as f:
             try:
                 date_taken = datetime.datetime.fromtimestamp(time.mktime(
